@@ -31,7 +31,7 @@ To compile the source code you need:
 * Extend to other Graphs like cubic lattice
 
 #### References
-Test [1]
-
-
-[1] http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
+* Mark Sweeny's original paper: http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
+* Preprint desciribing this work and in-depth analysis: http://arxiv.org/abs/1307.6647 (Please refer to this work when using this source code/program)
+* Dynamic Connectivity algorithm used in this work: http://dl.acm.org/citation.cfm?id=502095
+* Splay trees which underly the whole implementation: http://dl.acm.org/citation.cfm?id=3835 
