@@ -29,3 +29,9 @@ To compile the source code you need:
 * Write detailed documentation
 * Try some other balanced binary search trees
 * Extend to other Graphs like cubic lattice
+
+#### References
+Test [1]
+
+
+[1] http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
