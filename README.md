@@ -1,9 +1,11 @@
-# Sweeny_DC
-#### Dynamic Connectivity implementation of Sweeny's algorithm
-##### Description
-This is an implementation of Sweeny's algorithm for the simulation of the Random Cluster model
+# Sweeny
+#### Description
+Various more or less efficient implementations of Sweeny's algorithm for the simulation of the Random Cluster model
 on a two-dimensional square lattice with periodic boundary conditions. 
-It is implemented using a Dynamic Connectivity algorithm to provide amortized runtime bounds
+#### Breadth-First-Search implementation
+Add description
+#### Dynamic Connectivity implementation
+Implemented using a Dynamic Connectivity algorithm to provide amortized runtime bounds
 which are poly-logarithms in the number of vertices. 
 The programm provides a simplistic command-line interface to set parameter like the cluster-weight,
 inverse temperature, equilibration, number of steps or coupling constant. 
