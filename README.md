@@ -2,8 +2,6 @@
 #### Description
 Various more or less efficient implementations of Sweeny's algorithm for the simulation of the Random Cluster model
 on a two-dimensional square lattice with periodic boundary conditions. 
-#### Breadth-First-Search implementation
-Add description
 #### Dynamic Connectivity implementation
 Implemented using a Dynamic Connectivity algorithm to provide amortized runtime bounds
 which are poly-logarithms in the number of vertices. 
@@ -15,7 +13,13 @@ a 4 observables are implemented:
 * Number of clusters/components
 * Size of largest component (order parameter)
 * Sum of squared-cluster sizes (Susceptibility
-
+#### Breadth-First-Search implementation
+Implementation based on breadth-first searches. Connectivity information are obtained
+by traversing the graph. There are two variants: 
+* Sequential: Starting at one of both vertices
+* Interleaved/Alternating: To alternating BFS-steps at both vertices (More efficient)
+#### Union-Find implementation
+Implementation based on a combination of an Union-Find algorithm and breadth-first searches.
 ##### Dependencies
 To compile the source code you need:
 * GNU Scientific Library (GSL) version >= 1.1
