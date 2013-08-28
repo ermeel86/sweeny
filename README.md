@@ -1,26 +1,37 @@
-# Sweeny
+# Sweeny  - Efficient simulation of the random-cluster model
+Current version: 0.0.1
 ## Description
-Various more or less efficient implementations of Sweeny's algorithm for the simulation of the Random Cluster model
-on a two-dimensional square lattice with periodic boundary conditions. 
-## Dynamic Connectivity implementation
-Implemented using a Dynamic Connectivity algorithm to provide amortized runtime bounds
-which are poly-logarithms in the number of vertices. 
-The programm provides a simplistic command-line interface to set parameter like the cluster-weight,
-inverse temperature, equilibration, number of steps or coupling constant. 
-A simulation creates a time-series of observable samples (Monte Carlo). Right now 
-a 4 observables are implemented:
+Sweeny's algorithm is Markov Chain Monte Carlo algorithm for the Random Cluster model (RCM).
+The RCM captures models such as Bond-Percolation, Ising model, Potts model or Uniform Spanning Trees.
+
+The computationally demanding problem of Sweeny's algorithm is the 
+problem of obtaining connectivity-information while the graph is modified through
+edge insertions/deletions. 
+
+This is a collection of four different implementations of Sweeny's algorithm for the RCM
+in 2d on the square lattice. 
+
+All, except the Dynamic Connectivity implementation, have average run-times which are powers 
+of the system size (at the critical point of the simulated model).
+
+All four implementations include sampling facilities for time-series of the following 
+observables:
 
 * Number of active edges (internal energy)
 * Number of clusters/components
 * Size of largest component (order parameter)
 * Sum of squared-cluster sizes (Susceptibility
 
-## Breadth-First-Search implementation
+## Dynamic Connectivity implementation (DC)
+Implemented using a Dynamic Connectivity algorithm to provide amortized runtime bounds
+which are poly-logarithms in the number of vertices. 
+
+## Breadth-First-Search implementation (BFS)
 Implementation based on breadth-first searches. Connectivity information are obtained
 by traversing the graph. There are two variants: 
 
-* Sequential: Starting at one of both vertices
-* Interleaved/Alternating: To alternating BFS-steps at both vertices (More efficient)
+* Sequential (SBFS): Starting at one of both vertices
+* Interleaved/Alternating (IBFS): To alternating BFS-steps at both vertices (More efficient)
 
 ## Union-Find implementation
 Implementation based on a combination of an Union-Find algorithm and breadth-first searches.
@@ -37,20 +48,22 @@ To compile the source code you need:
 * Hierachical Data Format 5 (HDF5) version >= 1.8.
 
 ## IPython Notebook to compare to (available) exact results
-An IPython Notebook provides a naïve (zero'th order) test of
+An IPython Notebook provides a naïve (zero order) test of
 all algorithms by comparing the active-bond time-series to 
 exact results available for the 2d Ising model.
 
 ## TODO
 
+* Clean up code; Proper indentation
 * Write detailed documentation
 * Change from <linux/types.h> data types to <stdint.h> types for better portability
-* Write Python interface
+* Write Python interface for easy usage
 * Try some other balanced binary search trees
 * Extend to other Graphs like cubic lattice
+* Find alternative approaches to the connectivity problem
 
 ## References
 * Mark Sweeny's original paper: http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
-* Preprint desciribing this work and in-depth analysis: http://arxiv.org/abs/1307.6647 (Please refer to this work when using this source code/program)
+* Preprint describing this work and in-depth analysis: http://arxiv.org/abs/1307.6647 (Please refer to this work when using this source code/program)
 * Dynamic Connectivity algorithm used in this work: http://dl.acm.org/citation.cfm?id=502095
-* Splay trees which underly the whole implementation: http://dl.acm.org/citation.cfm?id=3835 
+* Splay trees which underlie the whole implementation: http://dl.acm.org/citation.cfm?id=3835 
