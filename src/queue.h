@@ -5,7 +5,7 @@ struct queue_node
 {
 	struct queue_node *next;
 	__u32 data;
-    __u8 visited;
+    __u32 visited;
 };
 
 struct queue 

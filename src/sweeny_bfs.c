@@ -48,15 +48,15 @@ __u32 edge[2];
 __s32 adj1[4];
 __s32 adj2[4];
 #ifndef SEQUENTIAL
-__u64 offset_1=1;
-__u64 offset_2 = 2;
+__u32 offset_1=1;
+__u32 offset_2 = 2;
 __u32 cs2;
 #else
-__u64 offset_1 = 0;
+__u32 offset_1 = 0;
 #endif /*SEQUENTIAL*/
 char *filename;
 struct queue_node *todo_pool;
-__u64 *visited;
+__u32 *visited;
 __u32 cs1;
 __u32 activeEdges=0;
 __u32 cutoff;

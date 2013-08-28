@@ -36,6 +36,11 @@ To compile the source code you need:
 * GNU Scientific Library (GSL) version >= 1.1
 * Hierachical Data Format 5 (HDF5) version >= 1.8.
 
+## IPython Notebook to compare to (available) exact results
+An IPython Notebook provides a naïve (zero'th order) test of
+all algorithms by comparing the active-bond time-series to 
+exact results available for the 2d Ising model.
+
 ## TODO
 
 * Write detailed documentation

@@ -1,3 +1,5 @@
 time_series
 obj
 bin
+*.swo
+*.swp
