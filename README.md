@@ -13,8 +13,8 @@ This project is a collection of 4 different implementations of Sweeny's algorith
 in 2d on the square lattice. 
 
 All, except the Dynamic Connectivity implementation, have average run-times which are powers 
-of the system size (at the critical point of the simulated model - That is where usually 
-cluster-algorithm are used in Statistical Physics)
+of the system size at the critical point of the simulated model - that is where usually 
+cluster-algorithms are used.
 
 All four implementations include sampling facilities for time-series of the following 
 observables:
