@@ -1,8 +1,7 @@
-# Sweeny  
-**Efficient simulation of the random-cluster model**
-**Current version: 0.0.1**
+#Efficient simulation of the random-cluster model
+*Current version: 0.01*
 ## Description
-Sweeny's algorithm is a Markov Chain Monte Carlo algorithm for the Random Cluster model (RCM).
+Sweeny's algorithm is a Markov Chain Monte Carlo algorithm for the random-cluster model (RCM).
 
 The RCM captures models such as Bond-Percolation, Ising model, Potts model or Uniform Spanning Trees.
 
