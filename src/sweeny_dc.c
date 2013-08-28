@@ -24,7 +24,7 @@ char equilibration=1;
 #define Q_D 2.
 #define CUTOFF_D 1000
 #define STEPS_D  65536
-#define TS_FILE_D "../time_series/simulation_l%u_q%.4f_b%.4f_c%.4f_s%u.hdf5"
+#define TS_FILE_D "../time_series/dc/simulation_l%u_q%.4f_b%.4f_c%.4f_s%u.hdf5"
 
 __u32 DX;
 __u32 seed;
@@ -227,6 +227,7 @@ int extractArgs(int argc, char **argv) {
     }
     snprintf(fn,BUF_LEN,TS_FILE_D,DX,q,beta,coupling,seed);
     if(verbose) {
+      printf("*Dynamic Connectivity implementation of Sweeny's algorithm*\n");
       printf("SEED = %u\n",seed);
       printf("DX = %u\n",DX);
       printf("Q = %f\n",q);

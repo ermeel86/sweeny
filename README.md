@@ -15,10 +15,6 @@ a 4 observables are implemented:
 * Size of largest component (order parameter)
 * Sum of squared-cluster sizes (Susceptibility
 
-### Example
-```bash
-./sweeny_dc -l 128 -q 2 -b 0.88 -j 1 -c 1000 -m 1000 -s 14
-```
 ## Breadth-First-Search implementation
 Implementation based on breadth-first searches. Connectivity information are obtained
 by traversing the graph. There are two variants: 
@@ -28,6 +24,12 @@ by traversing the graph. There are two variants:
 
 ## Union-Find implementation
 Implementation based on a combination of an Union-Find algorithm and breadth-first searches.
+
+## Example
+```bash
+./sweeny_{dc,uf,sbfs,ibfs} -l 128 -q 2 -b 0.88 -j 1 -c 1000 -m 1000 -s 14 -v
+```
+
 ## Dependencies
 To compile the source code you need:
 
@@ -36,8 +38,9 @@ To compile the source code you need:
 
 ## TODO
 
-* Write Python interface
 * Write detailed documentation
+* Change from <linux/types.h> data types to <stdint.h> types for better portability
+* Write Python interface
 * Try some other balanced binary search trees
 * Extend to other Graphs like cubic lattice
 
