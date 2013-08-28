@@ -15,7 +15,7 @@ a 4 observables are implemented:
 * Size of largest component (order parameter)
 * Sum of squared-cluster sizes (Susceptibility
 
-## Example
+### Example
 ```bash
 ./sweeny_dc -l 128 -q 2 -b 0.88 -j 1 -c 1000 -m 1000 -s 14
 ```
@@ -41,7 +41,7 @@ To compile the source code you need:
 * Try some other balanced binary search trees
 * Extend to other Graphs like cubic lattice
 
-#### References
+## References
 * Mark Sweeny's original paper: http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
 * Preprint desciribing this work and in-depth analysis: http://arxiv.org/abs/1307.6647 (Please refer to this work when using this source code/program)
 * Dynamic Connectivity algorithm used in this work: http://dl.acm.org/citation.cfm?id=502095
