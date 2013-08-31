@@ -3,11 +3,11 @@
 #include <stdlib.h>
 
 /********************************************************************************************/
-__u8 enqueue(struct queue *q, const __u32 value) {
+__u8 enqueue_2(struct queue_2 *q, const __u32 value) {
 
-struct queue_node *node = malloc(sizeof(struct queue_node));
+struct queue_2_node *node = malloc(sizeof(struct queue_2_node));
 if (node == NULL) {
-	fprintf(stderr,"Error in enqueue(): Could not allocate memory!\n");
+	fprintf(stderr,"Error in enqueue_2(): Could not allocate memory!\n");
 	exit(1);
 }
 node->data = value;
@@ -24,14 +24,14 @@ return 0;
 
 }
 /********************************************************************************************/
-__u8 dequeue(struct queue *q, __u32 *value)
+__u8 dequeue_2(struct queue_2 *q, __u32 *value)
 {
 	if(!q->first) {
 		*value = 0;
 		return 1;
 	}
 	*value = q->first->data;
-	struct queue_node *tmp = q->first;
+	struct queue_2_node *tmp = q->first;
 	if(q->first == q->last) {
 		q->first = q->last = NULL;
 	}
@@ -43,11 +43,11 @@ __u8 dequeue(struct queue *q, __u32 *value)
 
 }
 /********************************************************************************************/
-void init_queue(struct queue *q)
+void init_queue_2(struct queue_2 *q)
 {
 q->first = q->last = NULL;
 }
-int queue_empty_p(const struct queue *q)
+int queue_2_empty_p(const struct queue_2 *q)
 {
 	return q->first == NULL;
 }

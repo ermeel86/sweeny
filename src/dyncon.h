@@ -3,7 +3,8 @@
 #include "eulertour.h"
 
 /*Set Macro LEVEL_HEURISTIC in dyncon.h to use only half of all levels */
-
+__u32 te;
+__u32 nte;
 __u8 maxLevel;
 __u32 dlength;
 __u32 nvertices;

@@ -1,8 +1,28 @@
 #include <stdio.h>
 #include "eulertour.h"
 #include "dllist.h"
-
+static __u32 DX;
 static s_tree tmp;
+/* Return the node corresponding to the Euler Tour linearization of edge 
+   (@u,@v)
+*/
+static inline s_node * getE_SN(const __u32 u,const __u32 v,  s_node *edges) {
+//Note: 0:up, 1: right, 2:down, 3:left
+        if((u - v == DX )|| (v - u == DX*(DX-1))) {
+            return &edges[u*4]; //u to v up
+        }
+        if((v - u == DX )|| (u - v == DX*(DX - 1))){
+            return &edges[u*4 + 2]; //u to v down
+        }
+        if((v - u + 1== DX) || (u - v == 1)) {
+            return &edges[u*4 + 3]; //s's left edge
+        }
+        if((u- v + 1== DX) || (v - u == 1)) {
+            return &edges[u*4 + 1]; //s's right edge
+        }
+        //printf("NULL\n")           ; 
+        return NULL; //means not a valid edge
+}
 /**************************************************************************
  **************************************************************************
  */
@@ -69,6 +89,7 @@ s_tree * cut_et(__u32 u , __u32 v, struct EulerTour *et ) {
  * with level @level 
  */
 struct EulerTour * init_et(__u32 dlength, __u8 level) {
+    DX = dlength;
     struct EulerTour *et = malloc(sizeof(*et));
     if(!et)
         return NULL;

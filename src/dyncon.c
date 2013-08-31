@@ -4,9 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 __u8 curlvl;
-extern __u32 te;
-extern __u32 nte;
-
+static __u32 DX;
 struct s_tree *ut, *vt;
 __u32 i,from;
 /*********************************************************************
@@ -18,9 +16,10 @@ __u32 i,from;
  * the @levels array
  */
 __u8 init_dc(__u32 dl) {
-    dlength = dl; 
+    
+    DX=dlength = dl; 
     nvertices = dlength*dlength;  // 2d square lattice
-
+    nte=te=0;
     maxLevel = (__u8) floor(log(nvertices)/log(2)); //maybe change to foor(log2(dlength)) + 1 ?
 #ifdef LEVEL_HEURISTIC
     maxLevel /= 2;
