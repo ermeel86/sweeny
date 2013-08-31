@@ -1,96 +1,49 @@
 #include <stdio.h>
+#include "sweeny_uf.h"
 #include <ctype.h>
 #include <strings.h>
-#include <unistd.h>
 #include <stdio.h>
-#include "uf.h"
-#include "queue.h"
+#include "../src/uf.h"
+#include "../src/queue.h"
 #include <math.h>
 #include <gsl/gsl_rng.h> //Verwendung von Mersenne-Twister Pseudozufallszahlengenerator
-#include "fileio_hdf5.h"
-__s8 dN;
+static __s8 dN;
 
 #define MIN(a,b) a <= b ? a: b
 #define MAX(a,b) a >= b? a: b
 
-#define SEED_D 123456
-#define DX_D 128
-#define BETA_D 0.44
-#define COUPLING_D 2.
-#define Q_D 2.
-#define CUTOFF_D 1000
-#define STEPS_D  65536
-#define TS_FILE_D "../time_series/uf/simulation_l%u_q%.4f_b%.4f_c%.4f_s%u.hdf5"
-#define BUF_LEN 512
-char fn[BUF_LEN];
-
-char verbose=0;
-double rcWeights[4]; // array with precalculated mc weights
-double p_min_del,p_max_del, p_min_ins,p_max_ins;
-struct queue collect1,collect2;
-struct queue_node *todo_pool, *collect_pool;
-__u32 offset_1=1,offset_2=2;
-__u64 *sec_cs_moment ;
-__u32 *size_giant;
-__u32 *num_bonds;
-__u32 *num_cluster;
-//natural units! k_b=1
-__u32 DX;
-__u32 N;
-__u32 seed=123456;
-double q=2; 
-double coupling;
-double beta;
-double v;
-double K;
-__u32 steps;
-__s8 *bonds;
-//short int *ltc;
-gsl_rng * r; 
-__u32 edge[2];
-__s32 adj1[4];
-__s32 adj2[4];
-__s32 *uf1;
-__u32 cs1,cs2;
-__u32 activeEdges=0;
-__u32 cutoff;
+static char setup=0;
+static char verbose=0;
+static double rcWeights[4]; // array with precalculated mc weights
+static double p_min_del,p_max_del, p_min_ins,p_max_ins;
+static struct queue collect1,collect2;
+static struct queue_node *todo_pool, *collect_pool;
+static __u32 offset_1=1,offset_2=2;
+static __u64 *sec_cs_moment ;
+static __u32 *size_giant;
+static __u32 *num_bonds;
+static __u32 *num_cluster;
+static __u32 DX;
+static __u32 N;
+static __u32 seed;
+static double q; 
+static double coupling;
+static double beta;
+static double v;
+static double K;
+static __u32 steps;
+static __s8 *bonds;
+static gsl_rng * r; 
+static __u32 edge[2];
+static __s32 adj1[4];
+static __s32 adj2[4];
+static __s32 *uf1;
+static __u32 cs1,cs2;
+static __u32 activeEdges=0;
+static __u32 cutoff;
 /******************************************************************************
  *****************************************************************************/
-char save_timeseries(void) {
-    hid_t f_id = openFile_w(fn);
-    write_u32_1d(f_id,"num_bonds",num_bonds,steps);
-    write_u32_1d(f_id,"num_cluster",num_cluster,steps);
-    write_u32_1d(f_id,"size_giant",size_giant,steps);
-    write_u64_1d(f_id,"sec_cs_moment",sec_cs_moment,steps);
-
-    writeAttribute_u32(f_id,"num_bonds", "length_1d",&DX);
-    writeAttribute_u32(f_id,"num_bonds", "seed",&seed);
-    writeAttribute_u32(f_id,"num_bonds", "steps",&steps);
-    writeAttribute_u32(f_id,"num_bonds", "cutoff",&cutoff);
-    writeAttribute_double(f_id,"num_bonds", "beta",&beta);
-    writeAttribute_double(f_id,"num_bonds", "coupling",&coupling);
-    writeAttribute_double(f_id,"num_bonds", "q",&q);
-
-    closeFile(f_id);
-    return 1;
-
-} 
-/******************************************************************************
- *****************************************************************************/
-void initPRNG(void)
-{
-r = gsl_rng_alloc (gsl_rng_mt19937);
-gsl_rng_set(r,seed);
-}
-/******************************************************************************
- *****************************************************************************/
-void stopPRNG(void)
-{
-gsl_rng_free (r);
-}
-/******************************************************************************
- *****************************************************************************/
-void init(void)
+static char init(void)
 {
   K=coupling*beta;
   v = exp(K) - 1.0;
@@ -111,16 +64,19 @@ void init(void)
 
 
   }
-  initPRNG();
+  r = gsl_rng_alloc(gsl_rng_mt19937);
+  if(!r)
+      return 0;
+  gsl_rng_set(r,seed);
   __u32 i;
   uf1 = initUF(N);
   todo_pool = malloc(N*sizeof(struct queue_node));
   if(!todo_pool) {
-      exit(1);
+      return 0;
   }
   collect_pool = malloc(N*sizeof(struct queue_node));
   if(!collect_pool) {
-      exit(1);
+      return 0;
   }
   for(i=0;i<N;++i) {
 
@@ -129,62 +85,22 @@ void init(void)
       collect_pool[i].visited = todo_pool[i].visited = 0;
     }
 
-  sec_cs_moment = malloc(sizeof(*sec_cs_moment)*steps);
-  if(!sec_cs_moment) exit(1);
-  size_giant = malloc(sizeof(__u32)*steps);
-  if(!size_giant) {
-    exit(1);
-    free(sec_cs_moment);
-  }
-  num_bonds = malloc(sizeof(__u32)*steps);
-  if(!num_bonds) {
-    exit(1);
-    free(sec_cs_moment);
-    free(size_giant);
-  }
-  if(!num_bonds) {
-    free(size_giant);
-    free(sec_cs_moment);
-    free(num_bonds);
-    exit(1);
-  }
   bonds = malloc(sizeof(*bonds)*2*N);
-  if(bonds == NULL) {
-    fprintf(stderr,"Error in init(): Could not allocate memory!\n");
-    destroyUF(uf1);
-    stopPRNG();
-    free(sec_cs_moment);
-    free(size_giant);
-    free(num_bonds);
-    exit(1);
+  if(!bonds) {
+    return 0;
   }
   for(i=0;i<2*N;i++) bonds[i] = -1;
-  num_cluster = malloc(sizeof(__u32)*steps);
-  if(!num_cluster) {
-    fprintf(stderr,"Error in init(): Could not allocate memory!\n");
-    destroyUF(uf1);
-    free(bonds);
-    stopPRNG();
-    free(size_giant);
-    free(sec_cs_moment);
-    free(num_bonds);
-    exit(1);  
-  }
+  return 1;
 }
 /******************************************************************************
  *****************************************************************************/
-void destroy(void)
+static void destroy(void)
 {
   destroyUF(uf1);
   free(bonds);
-  stopPRNG();
-  free(num_bonds);
-  free(size_giant);
-  free(sec_cs_moment);
-  free(num_cluster);
+  gsl_rng_free(r);
   free(collect_pool);
   free(todo_pool);
-  //free(visited);
 }
 /******************************************************************************
  *****************************************************************************/
@@ -226,7 +142,7 @@ static inline __u32 ltcYprev(__u32 idx)
 }
 /******************************************************************************
  *****************************************************************************/
-void Adjacent(__u32 bidx)
+static void Adjacent(__u32 bidx)
 {
 
   if(bidx%2) { 
@@ -244,7 +160,7 @@ void Adjacent(__u32 bidx)
 }
 /******************************************************************************
  *****************************************************************************/
-void Adjacent2(__u32 idx, __u8 a) {
+static void Adjacent2(__u32 idx, __u8 a) {
   if(a == 1)
   {
     if(bonds[2*idx] == 1)  adj1[0] = ltcYnext(idx);
@@ -270,7 +186,7 @@ void Adjacent2(__u32 idx, __u8 a) {
 }
 /******************************************************************************
  *****************************************************************************/
-__u8 breadthFirstSearch(__u32 start, __u32 goal,__u8 accept_split)
+static __u8 breadthFirstSearch(__u32 start, __u32 goal,__u8 accept_split)
 {
 
     static struct queue todo1,todo2;
@@ -378,7 +294,7 @@ __u8 breadthFirstSearch(__u32 start, __u32 goal,__u8 accept_split)
 }
 /******************************************************************************
  *****************************************************************************/
-__u8 removeBond(__u32 a, __u32 b,__u8 accept_split,__u8 accept_non_split) {
+static __u8 removeBond(__u32 a, __u32 b,__u8 accept_split,__u8 accept_non_split) {
     __u32 vertex;
     if(breadthFirstSearch(a,b,accept_split)) //replacement edge found
         return accept_non_split;
@@ -407,10 +323,6 @@ __u8 removeBond(__u32 a, __u32 b,__u8 accept_split,__u8 accept_non_split) {
 static inline __u8 acceptChange(__s8 d_numCl, __s8 d_numAB, double randV)
 {
   return d_numAB == -1 ? (randV < rcWeights[d_numCl]) : (randV < rcWeights[2 - d_numCl]);
- /* static double dw=0;
-  dw = pow(q,d_numCl);
-  dw *= pow(v,d_numAB); 
-  return (dw>=1 || randV < dw); */
 }
 /******************************************************************************
  *****************************************************************************/
@@ -428,7 +340,7 @@ static inline void   mcStep(void)
       if(removeBond(edge[0],edge[1],1,1))
         activeEdges--;
       else {
-          fprintf(stderr,"ERROR!\n");
+          if(verbose)fprintf(stderr,"ERROR!\n");
           exit(-1);
       }
     }
@@ -466,7 +378,7 @@ static inline void   mcStep(void)
 }
 /******************************************************************************
  *****************************************************************************/
-void saveObs(__u32 cnt)
+static void extract_observables(__u32 cnt)
 {
   __u32 i=0,tn=0,nclust=0;
   size_giant[cnt] = 0;
@@ -484,7 +396,7 @@ void saveObs(__u32 cnt)
 }
 /******************************************************************************
  *****************************************************************************/
-void generateTimeSeries(void)
+static void generateTimeSeries(void)
 { 
   __u32 i=0,j=0;
   for(i=0;i<cutoff;i++){
@@ -497,91 +409,43 @@ void generateTimeSeries(void)
   for(i=0;i<steps;i++) {
     for(j=0;j<2*N;j++)
       mcStep();
-      saveObs(i);
+      extract_observables(i);
       for(j=0;j<N;j++)collect_pool[j].visited=0;
     }
 }
 /******************************************************************************
  *****************************************************************************/
-int extractArgs(int argc, char **argv) {
-    seed = SEED_D;
-    DX = DX_D;
-    beta = BETA_D;
-    steps = STEPS_D;
-    q = Q_D;
-    coupling = COUPLING_D;
-    cutoff = CUTOFF_D;
-    int c;
-    opterr = 0;
-    while((c = getopt(argc,argv,"s:l:q:b:m:j:c:vh")) != -1) {
-      switch(c) {
-	case 's':
-	  seed = atoi(optarg);
-	  break;
-	case 'l':
-	  DX = atoi(optarg);
-	  break;
-	case 'q':
-	  q = atof(optarg);
-	  break;
-	case 'b':
-	  beta = atof(optarg);
-	  break;
-	case 'm':
-	  steps = atoi(optarg);
-	  break;
-	case 'j':
-	  coupling = atof(optarg);
-	  break;
-	case 'c':
-	  cutoff = atoi(optarg);
-	  break;
-	case 'v':
-	  verbose = 1;
-	  break;
-	case 'h':
-	    printf("-s\t Pseudo random number generator seed, default value: %d\n",SEED_D);
-	    printf("-l\t Number of vertices per dimension, default value: %d\n",DX_D);
-	    printf("-q\t Number of states (also non integer allowed), default value: %f\n",Q_D);
-	    printf("-b\t Inverse temperature (In natural units), default value: %f\n",BETA_D);
-	    printf("-m\t Maximal (physical) simulation time, default value: %d\n",STEPS_D);
-	    printf("-j\t Coupling constant, default value %f\n",COUPLING_D);
-  	    printf("-c\t Cutoff for equilibration (only in runtime mode), default value %d\n",CUTOFF_D);
-	    printf("-v\t Print summary of all parameters, flag\n");
-	    printf("-h\t Show this help, flag\n");
-	    return 0;
-        case '?':
-	default:
-	  fprintf(stderr,"Invalid argument(s)\n");
-	  abort();
-      }
-    }
-    snprintf(fn,BUF_LEN,TS_FILE_D,DX,q,beta,coupling,seed);
-    if(verbose) {
-      printf("*Union-Find/BFS implementation of Sweeny's algorithm*\n");
-      printf("SEED = %u\n",seed);
-      printf("DX = %u\n",DX);
-      printf("Q = %f\n",q);
-      printf("beta = %f\n",beta);
-      printf("steps = %u\n",steps);
-      printf("coupling = %f\n",coupling);
-      printf("cutoff = %u\n",cutoff);
-      printf("time-series file: %s\n",fn);
-    }
-    return 1;
+char init_sweeny_uf(double _q,unsigned int _l,double _beta,double _coupl,
+        unsigned int _cutoff,unsigned _tslength,unsigned int rng_seed,
+        void *ts_0,void *ts_1,void * ts_2,void *ts_3) {
+    q = _q;
+    DX = _l;
+    beta = _beta;
+    coupling = _coupl;
+    cutoff = _cutoff;
+    steps = _tslength;
+    seed = rng_seed;
+    num_bonds = (__u32 *)ts_0;
+    num_cluster = (__u32 *)ts_1;
+    size_giant = (__u32 *)ts_2;
+    sec_cs_moment = (__u64 *)ts_3;
+    return setup=init();
+
+
 }
 /******************************************************************************
  *****************************************************************************/
-int main(int argc, char *argv[])
-{
-
-    if(!extractArgs(argc, argv))
-      return EXIT_SUCCESS;
-    init();
+void destroy_sweeny_uf(void) {
+    if(setup)
+        destroy();
+    setup=0;
+}
+/******************************************************************************
+ *****************************************************************************/
+char simulate_sweeny_uf(void) {
+    if(!setup)return 0;
     generateTimeSeries();
-    save_timeseries();
-    destroy();
-    exit(0);
+    return 1;
 }
 /******************************************************************************
  *****************************************************************************/

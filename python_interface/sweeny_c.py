@@ -4,7 +4,7 @@ Define the ctypes interface to the Monte Carlo C implementation
 """
 import ctypes
 import numpy as np
-LIB_PATH="./sweeny_mc.so"
+LIB_PATH="../obj/lib_sweeny_mc.so"
 
 symc = ctypes.CDLL(LIB_PATH)
 # specify parameter types
