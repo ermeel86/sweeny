@@ -144,7 +144,7 @@ static void Adjacent(__u32 bidx)
   else {
     bidx = bidx/2;
     edge[0] = bidx;
-    edge[1] = ltcYnext(bidx);
+    edge[1] = ltcYprev(bidx);
   }
 
 
@@ -154,21 +154,21 @@ static void Adjacent(__u32 bidx)
 static void neighbours(__u32 idx,__u8 a) {
   if(a == 1)
   {
-    if(bonds[2*idx] == 1)  adj1[0] = ltcYnext(idx);
+    if(bonds[2*idx] == 1)  adj1[0] = ltcYprev(idx);
     else  adj1[0] = -1;
     if(bonds[(2*idx)+1] == 1)  adj1[1] = ltcXnext(idx);
     else adj1[1] = -1;
-    if(bonds[2*ltcYprev(idx)] == 1)	adj1[2] = ltcYprev(idx);
+    if(bonds[2*ltcYnext(idx)] == 1)	adj1[2] = ltcYnext(idx);
     else adj1[2] = -1;
     if(bonds[(2*ltcXprev(idx))+1] ==1)adj1[3] = ltcXprev(idx);
     else adj1[3] = -1;
   }
   else {
-    if(bonds[2*idx] == 1)adj2[0] = ltcYnext(idx);
+    if(bonds[2*idx] == 1)adj2[0] = ltcYprev(idx);
     else adj2[0] = -1;
     if(bonds[(2*idx)+1] == 1)adj2[1] = ltcXnext(idx);
     else adj2[1] = -1;
-    if(bonds[2*ltcYprev(idx)] == 1)	adj2[2] = ltcYprev(idx);
+    if(bonds[2*ltcYnext(idx)] == 1)	adj2[2] = ltcYnext(idx);
     else adj2[2] = -1;
     if(bonds[(2*ltcXprev(idx))+1] == 1)adj2[3] = ltcXprev(idx);
     else adj2[3] = -1;
@@ -269,7 +269,7 @@ static inline __u8 connected(__u32 start, __u32 goal) {
 /******************************************************************************
  *****************************************************************************/
 __u8 static inline connected_s(__u32 start, __u32 goal) {
-    ++offset_2;
+    ++offset_1;
     return breadthFirstSearch_s(start,goal);
 }
 /******************************************************************************
@@ -398,6 +398,7 @@ static void extract_observables(__u32 i) {
     sec_cs_moment[i] = sum;
     maxc=clust_cnt=sum=chksum=0;
     offset_1=3;
+    offset_2=2;
 }
 /******************************************************************************
  *****************************************************************************/

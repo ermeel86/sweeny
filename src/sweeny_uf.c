@@ -153,7 +153,7 @@ static void Adjacent(__u32 bidx)
   else {
     bidx = bidx/2;
     edge[0] = bidx;
-    edge[1] = ltcYnext(bidx);
+    edge[1] = ltcYprev(bidx);
   }
 
 
@@ -163,21 +163,21 @@ static void Adjacent(__u32 bidx)
 static void Adjacent2(__u32 idx, __u8 a) {
   if(a == 1)
   {
-    if(bonds[2*idx] == 1)  adj1[0] = ltcYnext(idx);
+    if(bonds[2*idx] == 1)  adj1[0] = ltcYprev(idx);
     else  adj1[0] = -1;
     if(bonds[(2*idx)+1] == 1)  adj1[1] = ltcXnext(idx);
     else adj1[1] = -1;
-    if(bonds[2*ltcYprev(idx)] == 1)	adj1[2] = ltcYprev(idx);
+    if(bonds[2*ltcYnext(idx)] == 1)	adj1[2] = ltcYnext(idx);
     else adj1[2] = -1;
     if(bonds[(2*ltcXprev(idx))+1] ==1)adj1[3] = ltcXprev(idx);
     else adj1[3] = -1;
   }
   else {
-    if(bonds[2*idx] == 1)adj2[0] = ltcYnext(idx);
+    if(bonds[2*idx] == 1)adj2[0] = ltcYprev(idx);
     else adj2[0] = -1;
     if(bonds[(2*idx)+1] == 1)adj2[1] = ltcXnext(idx);
     else adj2[1] = -1;
-    if(bonds[2*ltcYprev(idx)] == 1)	adj2[2] = ltcYprev(idx);
+    if(bonds[2*ltcYnext(idx)] == 1)	adj2[2] = ltcYnext(idx);
     else adj2[2] = -1;
     if(bonds[(2*ltcXprev(idx))+1] == 1)adj2[3] = ltcXprev(idx);
     else adj2[3] = -1;
