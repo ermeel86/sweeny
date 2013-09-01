@@ -71,8 +71,8 @@ Alternatively it is also possible to use compiled binaries for all three differe
 
 .. code:: sh
 
-    ./sy_uf_mc.bin -l 64 -q 2 -b $(python - c "import numpy as np; print np.log(1 + np.sqrt(2))) -m 10000 -j 1 -c 1000 -s 1234567
-    ./sy_sbfs_mc.bin -l 64 -q 1 -b $(python - c "import numpy as np; print np.log(2) -m 10000 -j 1 -c 1000 -s 1234567
+    ./sy_uf_mc.bin -l 64 -q 2 -b $(python - c "import numpy as np; print np.log(1 + np.sqrt(2))") -m 10000 -j 1 -c 1000 -s 1234567
+    ./sy_sbfs_mc.bin -l 64 -q 1 -b $(python - c "import numpy as np; print np.log(2)") -m 10000 -j 1 -c 1000 -s 1234567
 
 This simulates the Ising model using the Union-Find *'uf'* based implementation and Percolation using the Sequential BFS, *'sbfs'*, method .
 
