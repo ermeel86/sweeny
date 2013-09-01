@@ -1,6 +1,7 @@
 time_series
 obj
 bin
+*.pyc
 *.so
 *.o
 *.swo
