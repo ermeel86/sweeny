@@ -4,9 +4,10 @@ Define the ctypes interface to the Monte Carlo C implementation
 """
 import ctypes
 import numpy as np
-LIB_PATH="../obj/lib_sweeny_mc.so"
+PATH_PREFIX="/home/eren/Research/Simulations/Sweeny_DC_Code/"
+LIB_PATH="obj/lib_sweeny_mc.so"
 
-symc = ctypes.CDLL(LIB_PATH)
+symc = ctypes.CDLL(PATH_PREFIX+LIB_PATH)
 # specify parameter types
 symc.sweeny_setup.argtypes = [ctypes.c_uint, ctypes.c_double, ctypes.c_uint,
         ctypes.c_double, ctypes.c_double, ctypes.c_uint, ctypes.c_uint,ctypes.c_uint,

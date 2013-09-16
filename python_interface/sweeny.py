@@ -164,3 +164,37 @@ class Sweeny(object):
             del self.__ts_u32,self.__ts_u64
         if self.__sim_i:
             syc.sy_destroy()
+    def __write_attributes(self,dset):
+        ds.attrs['q'] = self.q
+        ds.attrs['l'] = self.l
+        ds.attrs['beta'] = self.beta
+        ds.attrs['coupl'] = self.coupl
+        ds.attrs['cutoff'] = self.cutoff
+        ds.attrs['tslength'] =self.tslength
+        ds.attrs['rngseed'] = self.rngseed
+
+    def export_to_hdf5(self,file_name):
+        if self.__arr_av:
+            f = h5py.File(file_name,"w")
+            
+            dset = corr_av_h5py['/'].create_dataset("num_bonds",
+                self.tslength,dtype=self.__ts_u32.dtype,
+                compression='gzip')
+            self.__write_attributes(dset)
+ 
+            dset[...] = self.__ts_u32[0]
+            
+            dset = corr_av_h5py['/'].create_dataset("num_cluster",
+                self.tslength,dtype=self.__ts_u32.dtype,
+                compression='gzip')
+            dset[...] = self.__ts_u32[1]
+
+            dset = corr_av_h5py['/'].create_dataset("size_giant",
+                self.tslength,dtype=self.__ts_u32.dtype,
+                compression='gzip')
+            dset[...] = self.__ts_u32[2]
+            dset = corr_av_h5py['/'].create_dataset("sec_cs_moment",
+                self.tslength,dtype=self.__ts_u64.dtype,
+                compression='gzip')
+            dset[...] = self.__ts_u64
+            f.close()

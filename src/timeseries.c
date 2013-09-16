@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 extern __u32 *num_bonds,*num_cluster, *size_giant;
-extern __u64 *sec_cs_moment;
+extern __u64 *sec_cs_moment,*four_cs_moment;
 extern char fn[];
 
 extern __u32 DX;
@@ -27,6 +27,8 @@ char init_observables(void) {
     if(!size_giant) return 0;
     sec_cs_moment = malloc(sizeof(__u64)*steps);
     if(!sec_cs_moment) return 0;
+    four_cs_moment = malloc(sizeof(__u64)*steps);
+    if(!four_cs_moment) return 0;
     
     return 1;
 }
@@ -37,6 +39,7 @@ void destroy_observables(void) {
     free(num_cluster);
     free(size_giant);
     free(sec_cs_moment);
+    free(four_cs_moment);
 }
 /******************************************************************************
  *****************************************************************************/
@@ -48,6 +51,7 @@ char save_timeseries(void) {
     write_u32_1d(f_id,"num_cluster",num_cluster,steps);
     write_u32_1d(f_id,"size_giant",size_giant,steps);
     write_u64_1d(f_id,"sec_cs_moment",sec_cs_moment,steps);
+    write_u64_1d(f_id,"four_cs_moment",four_cs_moment,steps);
 
     writeAttribute_u32(f_id,"num_bonds", "length_1d",&DX);
     writeAttribute_u32(f_id,"num_bonds", "seed",&seed);

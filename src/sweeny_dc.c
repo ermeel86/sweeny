@@ -30,13 +30,13 @@ static double rcWeights[4]; // array with precalculated mc weights
 static double p_min_del,p_max_del, p_min_ins,p_max_ins;
 
 static __u32 *num_bonds, *num_cluster, *size_giant;
-static __u64 *sec_cs_moment;
+static __u64 *sec_cs_moment,*four_cs_moment;
 
 /******************************************************************************
  *****************************************************************************/
 static void extract_observables(__u32 i) {
     static __u32 clust_cnt=0;
-    static __u64 sum=0;
+    static __u64 sum=0,sum_2=0;
     static __u32 maxc=0;
     static s_tree *c;
     num_bonds[i] = nte + te;
@@ -44,6 +44,7 @@ static void extract_observables(__u32 i) {
     while(c) {
         clust_cnt++;
         sum += pow(c->root->n,2);//*c->root->n;
+        sum_2 += pow(c->root->n,2);
         if(c->root->n > maxc)
             maxc = c->root->n;
         c = c->next;
@@ -51,6 +52,7 @@ static void extract_observables(__u32 i) {
     num_cluster[i] = clust_cnt;
     size_giant[i] = maxc;
     sec_cs_moment[i] = sum;
+    four_cs_moment[i] = sum_2;
     sum=0;
     maxc = 0;
     clust_cnt=0;
@@ -111,7 +113,7 @@ static inline void sweep() {
  *****************************************************************************/
 char init_sweeny_dc(double _q,unsigned int _l,double _beta,double _coupl,
         unsigned int _cutoff,unsigned _tslength,unsigned int rng_seed,
-        void *ts_0,void *ts_1,void * ts_2,void *ts_3) {
+        void *ts_0,void *ts_1,void * ts_2,void *ts_3, void *ts_4) {
 
     q = _q;
     DX = _l;
@@ -124,7 +126,8 @@ char init_sweeny_dc(double _q,unsigned int _l,double _beta,double _coupl,
     num_cluster = (__u32 *)ts_1;
     size_giant = (__u32 *)ts_2;
     sec_cs_moment = (__u64 *)ts_3;
-    
+    four_cs_moment = (__u64 *)ts_4;
+
     r = gsl_rng_alloc(gsl_rng_mt19937);
     gsl_rng_set(r,seed);
     v = exp(coupling*beta) - 1.; // >0

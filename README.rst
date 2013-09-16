@@ -120,6 +120,6 @@ TODO
 References
 ----------
 - Mark Sweeny's original paper: http://prb.aps.org/abstract/PRB/v27/i7/p4445_1
-- Preprint describing this work and in-depth analysis: http://arxiv.org/abs/1307.6647 **(Please refer to this work when using this source code/program)**
+- Article describing this work and in-depth analysis: http://pre.aps.org/abstract/PRE/v88/i3/e033303 **(Please refer to this work when using this source code/program)**
 - Dynamic Connectivity algorithm used in this work: http://dl.acm.org/citation.cfm?id=502095
 - Splay trees which underlie the whole implementation: http://dl.acm.org/citation.cfm?id=3835 

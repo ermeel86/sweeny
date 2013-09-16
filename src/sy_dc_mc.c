@@ -26,7 +26,7 @@ double rnd_num;
 
 
 __u32 *num_bonds, *num_cluster, *size_giant;
-__u64 *sec_cs_moment;
+__u64 *sec_cs_moment,*four_cs_moment;
 
 int main(int argc, char **argv) {
 
@@ -36,7 +36,8 @@ int main(int argc, char **argv) {
     snprintf(fn,BUF_LEN,TS_FILE_D,DX,q,beta,coupling,seed);
     if(!init_observables())
         return EXIT_FAILURE;
-    if(!init_sweeny_dc(q,DX,beta,coupling,cutoff,steps,seed,num_bonds,num_cluster,size_giant,sec_cs_moment))
+    if(!init_sweeny_dc(q,DX,beta,coupling,cutoff,steps,seed,num_bonds,num_cluster,size_giant,
+                sec_cs_moment,four_cs_moment))
         return EXIT_FAILURE;
     if(!simulate_sweeny_dc())
         return EXIT_FAILURE;
