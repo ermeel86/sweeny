@@ -19,7 +19,7 @@ static double p_min_del,p_max_del, p_min_ins,p_max_ins;
 static struct queue collect1,collect2;
 static struct queue_node *todo_pool, *collect_pool;
 static __u32 offset_1=1,offset_2=2;
-static __u64 *sec_cs_moment ;
+static __u64 *sec_cs_moment,*four_cs_moment;
 static __u32 *size_giant;
 static __u32 *num_bonds;
 static __u32 *num_cluster;
@@ -383,11 +383,13 @@ static void extract_observables(__u32 cnt)
   __u32 i=0,tn=0,nclust=0;
   size_giant[cnt] = 0;
   sec_cs_moment[cnt] = 0;
+  four_cs_moment[cnt] = 0;
   for(i=0;i<N && tn <= N;i++) {
     if(uf1[i] < 0) {
       tn -= uf1[i];
       nclust+=1;
       sec_cs_moment[cnt]+= (__u64)pow(uf1[i],2);
+      four_cs_moment[cnt]+= (__u64)pow(uf1[i],4);
       if((__u32)(-uf1[i]) > size_giant[cnt]) size_giant[cnt] = (__u32)(-uf1[i]);
     }
   }
@@ -417,7 +419,7 @@ static void generateTimeSeries(void)
  *****************************************************************************/
 char init_sweeny_uf(double _q,unsigned int _l,double _beta,double _coupl,
         unsigned int _cutoff,unsigned _tslength,unsigned int rng_seed,
-        void *ts_0,void *ts_1,void * ts_2,void *ts_3) {
+        void *ts_0,void *ts_1,void * ts_2,void *ts_3, void *ts_4) {
     q = _q;
     DX = _l;
     beta = _beta;
@@ -429,6 +431,7 @@ char init_sweeny_uf(double _q,unsigned int _l,double _beta,double _coupl,
     num_cluster = (__u32 *)ts_1;
     size_giant = (__u32 *)ts_2;
     sec_cs_moment = (__u64 *)ts_3;
+    four_cs_moment = (__u64 *)ts_4;
     return setup=init();
 
 

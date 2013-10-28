@@ -41,7 +41,7 @@ static __u32 cs1;
 static __u32 activeEdges=0;
 static __u32 cutoff;
 static __u32 *num_bonds , *num_cluster, *size_giant;
-static __u64 *sec_cs_moment;
+static __u64 *sec_cs_moment, *four_cs_moment;
 
 /******************************************************************************
  *****************************************************************************/
@@ -377,7 +377,7 @@ static inline void   sweep_sbfs(void)
 static void extract_observables(__u32 i) {
     static __u32 j=0;
     static __u32 clust_cnt=0;
-    static __u64 sum=0;
+    static __u64 sum=0,sum_2;
     static __u32 maxc=0,chksum=0;
     num_bonds[i] = activeEdges;
     offset_1=0;
@@ -389,6 +389,7 @@ static void extract_observables(__u32 i) {
             clust_cnt++;
             if(cs1 > maxc) maxc = cs1;
             sum+=cs1*cs1;
+            sum_2+=pow(cs1,4);
             chksum+=cs1;
         }
 
@@ -396,7 +397,8 @@ static void extract_observables(__u32 i) {
     num_cluster[i] = clust_cnt;
     size_giant[i] = maxc;
     sec_cs_moment[i] = sum;
-    maxc=clust_cnt=sum=chksum=0;
+    four_cs_moment[i] = sum_2;
+    maxc=clust_cnt=sum=sum_2=chksum=0;
     offset_1=3;
     offset_2=2;
 }
@@ -434,7 +436,7 @@ static void generateTimeSeries(void)
  *****************************************************************************/
 char init_sweeny_ibfs(double _q,unsigned int _l,double _beta,double _coupl,
         unsigned int _cutoff,unsigned _tslength,unsigned int rng_seed,
-        void *ts_0,void *ts_1,void * ts_2,void *ts_3) {
+        void *ts_0,void *ts_1,void * ts_2,void *ts_3,void *ts_4) {
     setup=1;
     offset_1 =1;
     offset_2 = 2;
@@ -450,6 +452,7 @@ char init_sweeny_ibfs(double _q,unsigned int _l,double _beta,double _coupl,
     num_cluster = (__u32 *)ts_1;
     size_giant = (__u32 *)ts_2;
     sec_cs_moment = (__u64 *)ts_3;
+    four_cs_moment = (__u64 *)ts_4;
     if(!init())
         setup=0;
     return setup;
@@ -459,9 +462,9 @@ char init_sweeny_ibfs(double _q,unsigned int _l,double _beta,double _coupl,
  *****************************************************************************/
 char init_sweeny_sbfs(double _q,unsigned int _l,double _beta,double _coupl,
         unsigned int _cutoff,unsigned _tslength,unsigned int rng_seed,
-        void *ts_0,void *ts_1,void * ts_2,void *ts_3) {
+        void *ts_0,void *ts_1,void * ts_2,void *ts_3, void *ts_4) {
     setup=init_sweeny_ibfs(_q,_l,_beta,_coupl,_cutoff,_tslength,rng_seed,
-            ts_0,ts_1,ts_2,ts_3);
+            ts_0,ts_1,ts_2,ts_3,ts_4);
     if(setup)
         return setup=2;
     else

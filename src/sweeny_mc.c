@@ -8,21 +8,21 @@ static char sy_init=0;
 char sweeny_setup(unsigned int impl_idx, double q, unsigned int l, double beta, 
         double coupl, unsigned int cutoff, unsigned int tslength,
         unsigned int rng_seed,
-        void *ts_0, void *ts_1, void *ts_2, void *ts_3) {
+        void *ts_0, void *ts_1, void *ts_2, void *ts_3, void *ts_4) {
     cur_impl = impl_idx;
     switch(cur_impl) {
         case 0:
             return sy_init = init_sweeny_ibfs(q,l,beta,coupl,cutoff,tslength,
-                    rng_seed,ts_0,ts_1,ts_2,ts_3);
+                    rng_seed,ts_0,ts_1,ts_2,ts_3,ts_4);
         case 1:
             return sy_init = init_sweeny_sbfs(q,l,beta,coupl,cutoff,tslength,
-                    rng_seed,ts_0,ts_1,ts_2,ts_3);
+                    rng_seed,ts_0,ts_1,ts_2,ts_3,ts_4);
         case 2:
             return sy_init = init_sweeny_dc(q,l,beta,coupl,cutoff,tslength,
-                    rng_seed,ts_0,ts_1,ts_2,ts_3);
+                    rng_seed,ts_0,ts_1,ts_2,ts_3,ts_4);
         case 3:
             return sy_init=init_sweeny_uf(q,l,beta,coupl,cutoff,tslength,
-                    rng_seed,ts_0,ts_1,ts_2,ts_3);
+                    rng_seed,ts_0,ts_1,ts_2,ts_3,ts_4);
         default:
             return sy_init = 0;
     }

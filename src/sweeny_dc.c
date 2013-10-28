@@ -44,7 +44,7 @@ static void extract_observables(__u32 i) {
     while(c) {
         clust_cnt++;
         sum += pow(c->root->n,2);//*c->root->n;
-        sum_2 += pow(c->root->n,2);
+        sum_2 += pow(c->root->n,4);
         if(c->root->n > maxc)
             maxc = c->root->n;
         c = c->next;
@@ -53,7 +53,7 @@ static void extract_observables(__u32 i) {
     size_giant[i] = maxc;
     sec_cs_moment[i] = sum;
     four_cs_moment[i] = sum_2;
-    sum=0;
+    sum=sum_2=0;
     maxc = 0;
     clust_cnt=0;
 }

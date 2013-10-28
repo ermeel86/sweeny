@@ -13,6 +13,7 @@ char fn[BUF_LEN];
 char impl_title[] = "Union-Find implementation";
 
 char verbose=0;
+__u64 *four_cs_moment ;
 __u64 *sec_cs_moment ;
 __u32 *size_giant;
 __u32 *num_bonds;
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     snprintf(fn,BUF_LEN,TS_FILE_D,DX,q,beta,coupling,seed);
     if(!init_observables())
         return EXIT_FAILURE;
-    if(!init_sweeny_uf( q,DX,beta,coupling,cutoff,steps,seed,num_bonds,num_cluster,size_giant,sec_cs_moment))
+    if(!init_sweeny_uf( q,DX,beta,coupling,cutoff,steps,seed,num_bonds,num_cluster,size_giant,sec_cs_moment,four_cs_moment))
         return EXIT_FAILURE;
     if(!simulate_sweeny_uf())
         return EXIT_FAILURE;
