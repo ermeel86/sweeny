@@ -11,7 +11,7 @@ symc = ctypes.CDLL(PATH_PREFIX+LIB_PATH)
 # specify parameter types
 symc.sweeny_setup.argtypes = [ctypes.c_uint, ctypes.c_double, ctypes.c_uint,
         ctypes.c_double, ctypes.c_double, ctypes.c_uint, ctypes.c_uint,ctypes.c_uint,
-        ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 symc.sweeny_destroy.argtypes = None
 symc.sweeny_simulate.argtypes = None
 
@@ -20,7 +20,7 @@ symc.sweeny_simulate.argtypes = None
 #symc.sweeny_destroy.restype = None
 #symc.sweeny_simulate.restype = ctypes.c_char
 
-def sy_setup(impl_idx,q,l,beta,coupl,cutoff,rngseed,a,b,c,d):
+def sy_setup(impl_idx,q,l,beta,coupl,cutoff,rngseed,a,b,c,d,e):
     """
     Setup/Initialize a sweeny simulation
 
@@ -53,6 +53,8 @@ def sy_setup(impl_idx,q,l,beta,coupl,cutoff,rngseed,a,b,c,d):
         Array for time-series of size of giant component
     d: array_like (dtype=np.uint64)
         Array for time-series of second cluster size moment
+    e: array_like (dtype=np.uint64)
+        Array for time-series of fourth cluster size moment
 
 
     Returns
@@ -70,7 +72,8 @@ def sy_setup(impl_idx,q,l,beta,coupl,cutoff,rngseed,a,b,c,d):
             a.ctypes.data,
             b.ctypes.data,
             c.ctypes.data,
-            d.ctypes.data)
+            d.ctypes.data,
+            e.ctypes.data)
 
 
 

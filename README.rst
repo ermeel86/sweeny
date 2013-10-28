@@ -1,7 +1,9 @@
 Efficient simulation of the random-cluster model
 ================================================
 
-*Current version: 0.0.2*
+*Current version: 0.0.3*
+
+.. image:: index.png
 
 Description
 -----------
@@ -49,22 +51,25 @@ with the desired parameters:
     from sweeny import Sweeny
     sy = Sweeny(2,64,np.log(1 + np.sqrt(2)),1.,1000,10000,1234567,impl='dc')
     sy.simulate()
-    num_bonds,num_cluster,size_giant,sec_cs_moment =\
-    sy.ts_num_bonds, sy.ts_num_cluster,sy.ts_size_giant,ts_sec_cs_moment
 
 This runs a simulation for the Ising model with 64 vertices per dimension, at the critical point :math:`\beta_c = \log{(1+\sqrt{2})}`, with a equilibration
 of `1000` sweeps and `10000` sweeps of sampling. The implementation used above is defined by the abbreviation *'dc'* which corresponds
-to the Dynamic Connectivity implementation.
+to the Dynamic Connectivity implementation. To extract, for example, the time-series of active edges and size of the largest component, 
+we do:
+
+.. code:: python
+    num_bonds,size_giant =\ sy.ts_num_bonds, sy.ts_size_giant
 
 Once we have an instance of the Sweeny class it is easy to start another simulation (here for Percolation, using the Interleaved BFS 
-implementation, *'ibfs'*):
+implementation, *'ibfs'*) from which we extract the binder-cummulant:
 
 .. code:: python
     
     sy.init_sim(1,64,np.log(2),1.,1000,10000,1234567,impl='ibfs')
     sy.simulate()
-    num_bonds,num_cluster,size_giant,sec_cs_moment =\
-    sy.ts_num_bonds, sy.ts_num_cluster,sy.ts_size_giant,ts_sec_cs_moment
+    sec_cs_moment,four_cs_moment= sy.ts_sec_cs_moment,sy.ts_four_cs_moment
+    sec_cs_moment *= sec_cs_moment
+    binder_cummulant = four_cs_moment.mean()/sec_cs_moment.mean()
     del sy
 
 Alternatively it is also possible to use compiled binaries for all three different implementations:
@@ -85,6 +90,7 @@ To use the Python module:
 - GNU Scientific Library (GSL) version `>= 1.1`
 - Python version `>= 2.5`
 - NumPy version `>= 1.7`
+- 
 
 To use the standalone binaries:
 

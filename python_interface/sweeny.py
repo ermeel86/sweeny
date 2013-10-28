@@ -64,13 +64,13 @@ class Sweeny(object):
         if not self.__arr_av:
             # num_bonds, num_cluster, size_giant
             self.__ts_u32 = np.empty((3,tslength),dtype=np.uint32)
-            # sec_cs_moment
-            self.__ts_u64 = np.empty(tslength,dtype=np.uint64)
+            # sec_cs_moment and four_cs_moment
+            self.__ts_u64 = np.empty((2,tslength),dtype=np.uint64)
             self.__arr_av = True
             
         assert syc.sy_setup(self.impl_idx,self.q,self.l,self.beta,self.coupl,
                 self.cutoff,self.rngseed,self.__ts_u32[0],self.__ts_u32[1],self.__ts_u32[2]
-                ,self.__ts_u64)
+                ,self.__ts_u64[0],self.__ts_u64[1])
         self.__sim_i=True
 
     def __init__(self,q,l,beta,coupl,cutoff,tslength,rngseed,impl='ibfs'):
@@ -157,7 +157,17 @@ class Sweeny(object):
         ts_sec_cs_moment: ndarray
             Time-series of the second moment of the cluster size distribution. If simulation has not been initialized yet then None.
         """
-        return self.__ts_u64 if self.__arr_av else None
+        return self.__ts_u64[0] if self.__arr_av else None
+
+    @property
+    def ts_four_cs_moment(self):
+        """
+        Returns
+        -------
+        ts_four_cs_moment: ndarray
+            Time-series of the fourth moment of the cluster size distribution. If simulation has not been initialized yet then None.
+        """
+        return self.__ts_u64[1] if self.__arr_av else None
     
     def __destroy__(self):
         if self.__arr_av:
@@ -196,5 +206,9 @@ class Sweeny(object):
             dset = corr_av_h5py['/'].create_dataset("sec_cs_moment",
                 self.tslength,dtype=self.__ts_u64.dtype,
                 compression='gzip')
-            dset[...] = self.__ts_u64
+            dset[...] = self.__ts_u64[0]
+            dset = corr_av_h5py['/'].create_dataset("four_cs_moment",
+                self.tslength,dtype=self.__ts_u64.dtype,
+                compression='gzip')
+            dset[...] = self.__ts_u64[1]
             f.close()
