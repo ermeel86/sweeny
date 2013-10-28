@@ -58,6 +58,7 @@ to the Dynamic Connectivity implementation. To extract, for example, the time-se
 we do:
 
 .. code:: python
+
     num_bonds,size_giant =\ sy.ts_num_bonds, sy.ts_size_giant
 
 Once we have an instance of the Sweeny class it is easy to start another simulation (here for Percolation, using the Interleaved BFS 
